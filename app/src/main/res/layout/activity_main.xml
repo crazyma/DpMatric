@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<ScrollView
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
@@ -7,24 +7,256 @@
 	android:layout_height="match_parent"
 	tools:context=".MainActivity">
 
-	<TextView
-		android:id="@+id/textView"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:text="Hello World!"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toTopOf="parent" />
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
 
-	<Button
-		android:id="@+id/button"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:text="button"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/textView" />
+		<com.google.android.material.card.MaterialCardView
+			android:id="@+id/permissionCardView"
+			style="@style/CustomCard"
+			android:layout_width="0dp"
+			android:layout_height="80dp"
+			android:layout_margin="8dp"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+			<androidx.constraintlayout.widget.ConstraintLayout
+				android:layout_width="match_parent"
+				android:layout_height="match_parent">
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Permission"
+					app:layout_constraintBottom_toBottomOf="parent"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toTopOf="parent" />
+			</androidx.constraintlayout.widget.ConstraintLayout>
+
+		</com.google.android.material.card.MaterialCardView>
+
+		<com.google.android.material.card.MaterialCardView
+			android:id="@+id/emptyCardView"
+			style="@style/CustomCard"
+			android:layout_width="0dp"
+			android:layout_height="80dp"
+			android:layout_margin="8dp"
+			app:layout_constraintEnd_toStartOf="@id/twoCardView"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/permissionCardView">
+
+			<androidx.constraintlayout.widget.ConstraintLayout
+				android:layout_width="match_parent"
+				android:layout_height="match_parent">
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="No Line"
+					app:layout_constraintBottom_toBottomOf="parent"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toTopOf="parent" />
+
+				<ImageView
+					android:id="@+id/emptyCheckedImageView"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_margin="8dp"
+					android:src="@drawable/round_check_24"
+					app:layout_constraintBottom_toBottomOf="parent"
+					app:layout_constraintEnd_toEndOf="parent" />
+
+			</androidx.constraintlayout.widget.ConstraintLayout>
+
+		</com.google.android.material.card.MaterialCardView>
+
+		<com.google.android.material.card.MaterialCardView
+			android:id="@+id/twoCardView"
+			style="@style/CustomCard"
+			android:layout_width="0dp"
+			android:layout_height="80dp"
+			android:layout_margin="8dp"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toEndOf="@id/emptyCardView"
+			app:layout_constraintTop_toBottomOf="@id/permissionCardView">
+
+			<androidx.constraintlayout.widget.ConstraintLayout
+				android:layout_width="match_parent"
+				android:layout_height="match_parent">
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="2dp Line"
+					app:layout_constraintBottom_toBottomOf="parent"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toTopOf="parent" />
+
+				<ImageView
+					android:id="@+id/twoCheckedImageView"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_margin="8dp"
+					android:src="@drawable/round_check_24"
+					android:visibility="gone"
+					app:layout_constraintBottom_toBottomOf="parent"
+					app:layout_constraintEnd_toEndOf="parent" />
+			</androidx.constraintlayout.widget.ConstraintLayout>
+
+		</com.google.android.material.card.MaterialCardView>
+
+		<com.google.android.material.card.MaterialCardView
+			android:id="@+id/fourCardView"
+			style="@style/CustomCard"
+			android:layout_width="0dp"
+			android:layout_height="80dp"
+			android:layout_margin="8dp"
+			app:layout_constraintEnd_toStartOf="@id/eightCardView"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/emptyCardView">
+
+			<androidx.constraintlayout.widget.ConstraintLayout
+				android:layout_width="match_parent"
+				android:layout_height="match_parent">
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="4dp Line"
+					app:layout_constraintBottom_toBottomOf="parent"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toTopOf="parent" />
+
+				<ImageView
+					android:id="@+id/fourCheckedImageView"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_margin="8dp"
+					android:src="@drawable/round_check_24"
+					android:visibility="gone"
+					app:layout_constraintBottom_toBottomOf="parent"
+					app:layout_constraintEnd_toEndOf="parent" />
+
+			</androidx.constraintlayout.widget.ConstraintLayout>
+
+		</com.google.android.material.card.MaterialCardView>
+
+		<com.google.android.material.card.MaterialCardView
+			android:id="@+id/eightCardView"
+			style="@style/CustomCard"
+			android:layout_width="0dp"
+			android:layout_height="80dp"
+			android:layout_margin="8dp"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toEndOf="@id/fourCardView"
+			app:layout_constraintTop_toBottomOf="@id/twoCardView">
+
+			<androidx.constraintlayout.widget.ConstraintLayout
+				android:layout_width="match_parent"
+				android:layout_height="match_parent">
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="8dp Line"
+					app:layout_constraintBottom_toBottomOf="parent"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toTopOf="parent" />
+
+				<ImageView
+					android:id="@+id/eightCheckedImageView"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_margin="8dp"
+					android:src="@drawable/round_check_24"
+					android:visibility="gone"
+					app:layout_constraintBottom_toBottomOf="parent"
+					app:layout_constraintEnd_toEndOf="parent" />
+
+			</androidx.constraintlayout.widget.ConstraintLayout>
+
+		</com.google.android.material.card.MaterialCardView>
+
+		<com.google.android.material.card.MaterialCardView
+			android:id="@+id/sixteenCardView"
+			style="@style/CustomCard"
+			android:layout_width="0dp"
+			android:layout_height="80dp"
+			android:layout_margin="8dp"
+			app:layout_constraintEnd_toStartOf="@id/thirtyTwoCardView"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/fourCardView">
+
+			<androidx.constraintlayout.widget.ConstraintLayout
+				android:layout_width="match_parent"
+				android:layout_height="match_parent">
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="16dp Line"
+					app:layout_constraintBottom_toBottomOf="parent"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toTopOf="parent" />
+
+				<ImageView
+					android:id="@+id/sixteenCheckedImageView"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_margin="8dp"
+					android:src="@drawable/round_check_24"
+					android:visibility="gone"
+					app:layout_constraintBottom_toBottomOf="parent"
+					app:layout_constraintEnd_toEndOf="parent" />
+
+			</androidx.constraintlayout.widget.ConstraintLayout>
+
+		</com.google.android.material.card.MaterialCardView>
+
+		<com.google.android.material.card.MaterialCardView
+			android:id="@+id/thirtyTwoCardView"
+			style="@style/CustomCard"
+			android:layout_width="0dp"
+			android:layout_height="80dp"
+			android:layout_margin="8dp"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toEndOf="@id/sixteenCardView"
+			app:layout_constraintTop_toBottomOf="@id/eightCardView">
+
+			<androidx.constraintlayout.widget.ConstraintLayout
+				android:layout_width="match_parent"
+				android:layout_height="match_parent">
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="32dp Line"
+					app:layout_constraintBottom_toBottomOf="parent"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toTopOf="parent" />
+
+				<ImageView
+					android:id="@+id/thirtyTwoCheckedImageView"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_margin="8dp"
+					android:src="@drawable/round_check_24"
+					android:visibility="gone"
+					app:layout_constraintBottom_toBottomOf="parent"
+					app:layout_constraintEnd_toEndOf="parent" />
+
+			</androidx.constraintlayout.widget.ConstraintLayout>
+
+		</com.google.android.material.card.MaterialCardView>
+
+	</androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

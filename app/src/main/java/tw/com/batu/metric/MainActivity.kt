@@ -7,6 +7,7 @@ import android.provider.Settings
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import tw.com.batu.metric.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
@@ -14,25 +15,12 @@ class MainActivity : AppCompatActivity() {
         const val REQUEST_OVERLAY_PERMISSION = 1
     }
 
+    private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
-        findViewById<Button>(R.id.button).setOnClickListener {
-
-            if (!Settings.canDrawOverlays(this)) {
-                // ask for setting
-                val intent = Intent(
-                    Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                    Uri.parse("package:$packageName")
-                )
-                startActivityForResult(intent, REQUEST_OVERLAY_PERMISSION)
-            } else {
-                launchOverlay2()
-            }
-
-        }
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        setupViews()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -45,6 +33,51 @@ class MainActivity : AppCompatActivity() {
                 // permission not granted...
                 Toast.makeText(this, "Permission not granted", Toast.LENGTH_SHORT).show()
             }
+        }
+    }
+
+    private fun setupViews(){
+        with(binding){
+            permissionCardView.setOnClickListener {
+                checkPermission()
+            }
+
+            emptyCardView.setOnClickListener {
+
+            }
+
+            twoCardView.setOnClickListener {
+
+            }
+
+            fourCardView.setOnClickListener {
+
+            }
+
+            eightCardView.setOnClickListener {
+
+            }
+
+            sixteenCardView.setOnClickListener {
+
+            }
+
+            thirtyTwoCardView.setOnClickListener {
+
+            }
+        }
+    }
+
+    private fun checkPermission(){
+        if (!Settings.canDrawOverlays(this)) {
+            // ask for setting
+            val intent = Intent(
+                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                Uri.parse("package:$packageName")
+            )
+            startActivityForResult(intent, REQUEST_OVERLAY_PERMISSION)
+        } else {
+            //  DO nothing
         }
     }
 
