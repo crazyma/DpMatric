@@ -15,7 +15,7 @@ class MetricView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
-    var interval: Int = 8
+    var interval: Int = 0
         set(value) {
             field = value
             invalidate()
@@ -36,7 +36,7 @@ class MetricView @JvmOverloads constructor(
         if (interval > 0) {
             val width = width.toFloat()
             val height = height.toFloat()
-            Log.d("badu", "width: $width, height: $height")
+            Log.i("badu", "width: $width, height: $height")
 
             for (i in 0..width.toInt() step interval.dpToPixelSize()) {
                 canvas.drawLine(i.toFloat(), 0f, i.toFloat(), height, paint)

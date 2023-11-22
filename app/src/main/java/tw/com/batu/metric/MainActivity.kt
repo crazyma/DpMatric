@@ -1,21 +1,44 @@
 package tw.com.batu.metric
 
+import android.content.ComponentName
 import android.content.Intent
+import android.content.ServiceConnection
 import android.net.Uri
 import android.os.Bundle
+import android.os.IBinder
 import android.provider.Settings
-import android.widget.Button
-import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import tw.com.batu.metric.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
-    companion object {
-        const val REQUEST_OVERLAY_PERMISSION = 1
-    }
+    private var overlayService: OverlayService? = null
+    private var serviceBound: Boolean = false
 
     private lateinit var binding: ActivityMainBinding
+    private val connection = object : ServiceConnection {
+
+        override fun onServiceConnected(className: ComponentName, service: IBinder) {
+            val binder = service as OverlayService.OverlayBinder
+            overlayService = binder.getService()
+            serviceBound = true
+        }
+
+        override fun onServiceDisconnected(arg0: ComponentName) {
+            serviceBound = false
+        }
+    }
+
+    private val requestOverlayPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        switchTopViewState()
+    }
+
+    private val isOverlayPermissionGranted: Boolean
+        get() = Settings.canDrawOverlays(this)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -23,71 +46,93 @@ class MainActivity : AppCompatActivity() {
         setupViews()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_OVERLAY_PERMISSION) {
-            if (Settings.canDrawOverlays(this)) {
-                // permission granted...
-                launchOverlay2()
-            } else {
-                // permission not granted...
-                Toast.makeText(this, "Permission not granted", Toast.LENGTH_SHORT).show()
-            }
-        }
+    override fun onStart() {
+        super.onStart()
+        // If the Service is existing then bind to it, else nothing happens.
+        bindService(OverlayService.newIntent(this), connection, 0)
     }
 
-    private fun setupViews(){
-        with(binding){
+    override fun onStop() {
+        unbindService(connection)
+        super.onStop()
+    }
+
+    private fun setupViews() {
+        with(binding) {
+
             permissionCardView.setOnClickListener {
-                checkPermission()
+                if (isOverlayPermissionGranted) {
+                    //  Do nothing.
+                } else {
+                    Intent(
+                        Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                        Uri.parse("package:$packageName")
+                    ).let(requestOverlayPermissionLauncher::launch)
+                }
             }
 
             emptyCardView.setOnClickListener {
-
+                if (isOverlayPermissionGranted && overlayService != null) {
+                    stopService()
+                }
             }
 
             twoCardView.setOnClickListener {
-
+                if (isOverlayPermissionGranted) {
+                    updateOverlayService(2)
+                }
             }
 
             fourCardView.setOnClickListener {
-
+                if (isOverlayPermissionGranted) {
+                    updateOverlayService(4)
+                }
             }
 
             eightCardView.setOnClickListener {
-
+                if (isOverlayPermissionGranted) {
+                    updateOverlayService(8)
+                }
             }
 
             sixteenCardView.setOnClickListener {
-
+                if (isOverlayPermissionGranted) {
+                    updateOverlayService(16)
+                }
             }
 
             thirtyTwoCardView.setOnClickListener {
-
+                if (isOverlayPermissionGranted) {
+                    updateOverlayService(32)
+                }
             }
         }
     }
 
-    private fun checkPermission(){
-        if (!Settings.canDrawOverlays(this)) {
-            // ask for setting
-            val intent = Intent(
-                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                Uri.parse("package:$packageName")
-            )
-            startActivityForResult(intent, REQUEST_OVERLAY_PERMISSION)
+    private fun switchTopViewState() {
+        if (isOverlayPermissionGranted) {
+            //  TODO by Batu: setup granted layout
         } else {
-            //  DO nothing
+            //  TODO by Batu: setup not granted layout
         }
     }
 
-    private fun launchOverlay() {
-        val intent = Intent(this, OverlayActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        startActivity(intent)
+    private fun updateOverlayService(interval: Int) {
+        if(overlayService == null) {
+            launchOverlayService(interval)
+        }else{
+            overlayService?.interval = interval
+        }
     }
 
-    private fun launchOverlay2() {
-        startService(Intent(this, OverlayService::class.java))
+    private fun launchOverlayService(interval: Int) {
+        startService(OverlayService.newIntent(this, interval))
+        bindService(OverlayService.newIntent(this), connection, 0)
+    }
+
+    private fun stopService() {
+        stopService(Intent(this, OverlayService::class.java)).takeIf { it }?.run {
+            overlayService = null
+        }
     }
 }
