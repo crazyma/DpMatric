@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
 import kotlin.math.roundToInt
@@ -34,16 +33,20 @@ class MetricView @JvmOverloads constructor(
         super.onDraw(canvas)
 
         if (interval > 0) {
-            val width = width.toFloat()
-            val height = height.toFloat()
-            Log.i("badu", "width: $width, height: $height")
-
-            for (i in 0..width.toInt() step interval.dpToPixelSize()) {
-                canvas.drawLine(i.toFloat(), 0f, i.toFloat(), height, paint)
+            val startHeight: Int = paddingTop
+            val endHeight: Int = height - paddingBottom
+            for (i in 0..width step interval.dpToPixelSize()) {
+                canvas.drawLine(
+                    i.toFloat(),
+                    startHeight.toFloat(),
+                    i.toFloat(),
+                    endHeight.toFloat(),
+                    paint
+                )
             }
 
-            for (i in 0..height.toInt() step interval.dpToPixelSize()) {
-                canvas.drawLine(0f, i.toFloat(), width, i.toFloat(), paint)
+            for (i in startHeight..endHeight step interval.dpToPixelSize()) {
+                canvas.drawLine(0f, i.toFloat(), width.toFloat(), i.toFloat(), paint)
             }
         }
     }

@@ -5,20 +5,32 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.PixelFormat
 import android.os.Binder
+import android.os.Build
 import android.os.IBinder
+import android.os.Parcelable
+import android.util.Log
 import android.view.WindowManager
+import androidx.core.view.updatePadding
+import kotlinx.parcelize.Parcelize
 
 class OverlayService : Service() {
 
     companion object {
 
-        private const val EXTRA_INTERVAL = "extra_interval"
+        private const val EXTRA_INPUT = "extra_input"
 
-        fun newIntent(context: Context, interval: Int? = null) =
+        fun newIntent(context: Context, input: Input? = null) =
             Intent(context, OverlayService::class.java).apply {
-                interval?.let { putExtra(EXTRA_INTERVAL, it) }
+                input?.let { putExtra(EXTRA_INPUT, it) }
             }
     }
+
+    @Parcelize
+    data class Input(
+        val systemTopInset: Int,
+        val systemBottomInset: Int,
+        val interval: Int
+    ) : Parcelable
 
     inner class OverlayBinder : Binder() {
         // Return this instance of LocalService so clients can call public methods.
@@ -37,6 +49,18 @@ class OverlayService : Service() {
                 removeOverlayView()
             }
         }
+
+    private var systemTopInset = 0
+        set(value) {
+            field = value
+            updateOverlayView()
+        }
+    private var systemBottomInset = 0
+        set(value) {
+            field = value
+            updateOverlayView()
+        }
+
     private var metricView: MetricView? = null
 
     override fun onCreate() {
@@ -60,8 +84,10 @@ class OverlayService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        intent?.let {
-            interval = it.getIntExtra(EXTRA_INTERVAL, 0)
+        intent?.getParcelableExtraCompat<Input>(EXTRA_INPUT)?.let { input ->
+            interval = input.interval
+            systemTopInset = input.systemTopInset
+            systemBottomInset = input.systemBottomInset
         }
         return START_NOT_STICKY
     }
@@ -84,6 +110,22 @@ class OverlayService : Service() {
     private fun updateOverlayView() {
         metricView?.let {
             it.interval = this.interval
+            Log.d("badu", "systemTopInset: $systemTopInset, systemBottomInset: $systemBottomInset")
+            //  TODO by Batu: need more testing about the padding setting
+//            it.updatePadding(
+//                top = systemTopInset,
+//                bottom = systemBottomInset
+//            )
         }
     }
+
+    private inline fun <reified T : Parcelable> Intent.getParcelableExtraCompat(key: String): T? =
+        when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> getParcelableExtra(
+                key,
+                T::class.java
+            )
+
+            else -> @Suppress("DEPRECATION") getParcelableExtra(key) as? T
+        }
 }

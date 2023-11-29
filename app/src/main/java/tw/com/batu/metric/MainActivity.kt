@@ -7,8 +7,12 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.IBinder
 import android.provider.Settings
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import tw.com.batu.metric.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -39,9 +43,13 @@ class MainActivity : AppCompatActivity() {
     private val isOverlayPermissionGranted: Boolean
         get() = Settings.canDrawOverlays(this)
 
+    private var systemTopInset: Int? = null
+    private var systemBottomInset: Int? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
+        setupWindow()
         setContentView(binding.root)
         setupViews()
     }
@@ -55,6 +63,25 @@ class MainActivity : AppCompatActivity() {
     override fun onStop() {
         unbindService(connection)
         super.onStop()
+    }
+
+    private fun setupWindow() {
+        enableEdgeToEdge()
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, windowInsets ->
+            val systemBarsInsets = windowInsets.getInsets(
+                WindowInsetsCompat.Type.systemBars()
+            )
+
+            systemTopInset = systemBarsInsets.top
+            systemBottomInset = systemBarsInsets.bottom
+
+            view.updatePadding(
+                top = systemBarsInsets.top,
+                bottom = systemBarsInsets.bottom,
+            )
+
+            windowInsets
+        }
     }
 
     private fun setupViews() {
@@ -118,15 +145,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateOverlayService(interval: Int) {
-        if(overlayService == null) {
+        if (overlayService == null) {
             launchOverlayService(interval)
-        }else{
+        } else {
             overlayService?.interval = interval
         }
     }
 
     private fun launchOverlayService(interval: Int) {
-        startService(OverlayService.newIntent(this, interval))
+        val input = OverlayService.Input(
+            systemTopInset = systemTopInset ?: 0,
+            systemBottomInset = systemBottomInset ?: 0,
+            interval = interval
+        )
+        startService(OverlayService.newIntent(this, input))
         bindService(OverlayService.newIntent(this), connection, 0)
     }
 
